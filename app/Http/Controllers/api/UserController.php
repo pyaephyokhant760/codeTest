@@ -8,7 +8,6 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
-
 class UserController extends Controller
 {
     /**
@@ -46,8 +45,8 @@ class UserController extends Controller
             'address' => $request->address,
             'password' => Hash::make($request->password),
         ]);
-        $token = $data->createToken('token')->accessToken;
-        return response()->json(['status' => True,'message'=> $data,'token'=>$token],200);
+        
+        return response()->json(['status' => True,'message'=> $data,'token'=>$data->createToken("API TOKEN")->plainTextToken],200);
     }
 
     /**
