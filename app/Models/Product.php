@@ -11,4 +11,14 @@ class Product extends Model
         'description',
         'price',
     ];
+
+    public function order()
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
