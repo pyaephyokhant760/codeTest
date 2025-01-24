@@ -1,4 +1,4 @@
-# CodeTest
+# E-Commerce Application
 
 ## generate .env
 copy .env.example and rename it .env
