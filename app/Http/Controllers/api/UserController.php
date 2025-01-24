@@ -32,6 +32,7 @@ class UserController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'phone' => 'required',
             'address' => 'required',
+            'role' => 'required',
             'password' => 'required|string',
         ]);
         if ($validatedData->fails()) {
@@ -43,6 +44,7 @@ class UserController extends Controller
             'email' => $request->email,
             'phone' => $request->phone,
             'address' => $request->address,
+            'role' => $request->role,
             'password' => Hash::make($request->password),
         ]);
         
@@ -79,6 +81,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'phone' => 'required|string|max:255|unique:users,phone,' . $id,
             'email' => 'required|string|email|max:255|unique:users,email,' . $id,
+            'role' => 'required',
             'address' => 'required|string',
         ]);
         if ($validatedData->fails()) {
@@ -100,4 +103,29 @@ class UserController extends Controller
         }
         return response()->json(['status' => False, 'message' => 'Try Again'], 200);
     }
+
+    public function login (Request $request) {
+        $request->validate([
+            'email'=> 'required|email|exists:users,email',
+            'password'=>'required'
+        ]);
+        $user=User::where('email',$request->email)->first();
+        if(!$user || !Hash::check( $request->password,$user->password)){
+            return response()->json([
+                'status' => False,
+                'message'=>"The provided credentials are incorrect",
+            ]);
+        }
+        $token=$user->createToken($user->name);
+        return response()->json(['status' => True,'message'=>"Login successfully",'user'=>$user,'token'=>$token->plainTextToken]);
+    }
+
+    public function logout(Request $request) {
+        $request->user()->tokens()->delete();
+        return [
+            'status' => True,
+            'message'=>"You are logged out",
+        ];
+    }
+
 }
