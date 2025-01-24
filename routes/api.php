@@ -10,7 +10,13 @@ use App\Http\Controllers\api\OrdersController;
 //     return $request->user();
 // })->middleware('auth:sanctum');
 
-
 Route::apiResource('users',UserController::class);
-Route::apiResource('products',ProductController::class);
-Route::apiResource('orders',OrdersController::class);
+Route::post('login',[UserController::class,'login']);
+Route::post('logout',[UserController::class,'logout']);
+
+
+    
+    Route::middleware(['auth', 'adminMiddleware'])->group(function () {
+        Route::apiResource('products',ProductController::class);
+    Route::apiResource('orders',OrdersController::class);
+    });
